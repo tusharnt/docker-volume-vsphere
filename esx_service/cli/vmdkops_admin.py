@@ -327,7 +327,7 @@ def commands():
                                 '--default-datastore': {
                                     'help': "Mark datastore as a default datastore for this tenant",
                                     'action': 'store_true'
-                                },                            
+                                },
                                 '--allow-create': {
                                     'help': 'Allow create and delete on datastore if set',
                                     'action': 'store_true'
@@ -356,7 +356,7 @@ def commands():
                                     'required': True
                                 },
                                 '--allow-create': {
-                                    'help': 
+                                    'help':
                                     'Allow create and delete on datastore if set to True; disallow create and delete on datastore if set to False',
                                 },
                                 '--volume-maxsize': {
@@ -811,7 +811,7 @@ def generate_tenant_ls_rows(tenant_list):
             default_datastore = ""
         else:
             default_datastore = vmdk_utils.get_datastore_name(tenant.default_datastore_url)
-        
+
         vm_list = generate_vm_list(tenant.vms)
         rows.append([uuid, name, description, default_datastore, vm_list])
 
@@ -820,9 +820,9 @@ def generate_tenant_ls_rows(tenant_list):
 def tenant_create(args):
     """ Handle tenant create command """
     error_info, tenant = auth_api._tenant_create(
-                                                 name=args.name, 
-                                                 description="",  
-                                                 vm_list=args.vm_list, 
+                                                 name=args.name,
+                                                 description="",
+                                                 vm_list=args.vm_list,
                                                  privileges=[])
     if error_info:
         return operation_fail(error_info.msg)
@@ -849,7 +849,7 @@ def tenant_rm(args):
     if args.remove_volumes:
         print("All Volumes will be removed")
         remove_volumes = True
-    
+
     error_info = auth_api._tenant_rm(args.name, remove_volumes)
 
     if error_info:
@@ -938,7 +938,7 @@ def tenant_access_add(args):
                                              volume_maxsize_in_MB=volume_maxsize_in_MB,
                                              volume_totalsize_in_MB=volume_totalsize_in_MB
                                              )
-      
+
     if error_info:
         return operation_fail(error_info.msg)
     else:
@@ -953,10 +953,10 @@ def tenant_access_set(args):
     if args.volume_totalsize:
         volume_totalsize_in_MB = convert.convert_to_MB(args.volume_totalsize)
 
-    error_info = auth_api._tenant_access_set(name=args.name, 
+    error_info = auth_api._tenant_access_set(name=args.name,
                                              datastore=args.datastore,
-                                             allow_create=args.allow_create, 
-                                             volume_maxsize_in_MB=volume_maxsize_in_MB, 
+                                             allow_create=args.allow_create,
+                                             volume_maxsize_in_MB=volume_maxsize_in_MB,
                                              volume_totalsize_in_MB=volume_totalsize_in_MB)
 
     if error_info:

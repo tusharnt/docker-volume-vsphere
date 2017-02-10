@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """
-Copyright 2016 VMware, Inc.  All rights reserved. 
-Licensed under the Apache License, Version 2.0 
+Copyright 2016 VMware, Inc.  All rights reserved.
+Licensed under the Apache License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0
 """
 
