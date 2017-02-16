@@ -38,7 +38,7 @@ const (
 	pluginSockDir = "/run/docker/plugins"
 	mountRoot     = "/mnt/vmdk" // VMDK and photon volumes are mounted here
 	photonDriver  = "photon"
-	vmdkDriver    = "vmdk"
+	vmdkDriver    = "vsphere"
 )
 
 // An equivalent function is not exported from the SDK.
@@ -97,7 +97,7 @@ func main() {
 	var driver volume.Driver
 
 	// Define command line options
-	driverName := flag.String("driver", "vmdk", "Volume driver")
+	driverName := flag.String("driver", "vsphere", "Volume driver")
 	logLevel := flag.String("log_level", "debug", "Logging Level")
 	configFile := flag.String("config", config.DefaultConfigPath, "Configuration file path")
 

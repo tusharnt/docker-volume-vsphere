@@ -15,7 +15,7 @@
 package vmdk
 
 //
-// VMWare VMDK Docker Data Volume plugin.
+// VMWare Vsphere Docker Data Volume plugin.
 //
 // Provide support for --driver=vmdk in Docker, when Docker VM is running under ESX.
 //
@@ -41,8 +41,8 @@ const (
 	devWaitTimeout   = 1 * time.Second
 	sleepBeforeMount = 1 * time.Second
 	watchPath        = "/dev/disk/by-path"
-	version          = "VMDK Volume Driver v0.3"
-	driverName       = "vmdk"
+	version          = "VSphere Volume Driver v0.3"
+	driverName       = "vsphere"
 )
 
 // VolumeDriver - VMDK driver struct

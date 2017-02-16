@@ -22,7 +22,7 @@ A plugin's lifecycle includes.
 Note: Upgrade of the plugin is done as an uninstall of the older version and an install of the newer version.
 
 1. Install: If it is the first install Docker can be running while the plugin is installed. During installs that are part of an upgrade, the admin must insure that docker is stopped and is started after the plugin starts up.
-2. Uninstall: During uninstall docker should be stopped. Before uninstall, make sure no containers still use the VMDK volumes, stop docker engine, and then uninstall the plugin. Docker will generate timeouts on docker start if there are still VMDK volumes after the plugin is uninstalled.
+2. Uninstall: During uninstall docker should be stopped. Before uninstall, make sure no containers still use the Vsphere volumes, stop docker engine, and then uninstall the plugin. Docker will generate timeouts on docker start if there are still Vsphere volumes after the plugin is uninstalled.
 3. Stop: Docker should be stopped before stopping the plugin. [Docker's documentation] (https://docs.docker.com/engine/extend/plugin_api/)
 4. Start: The plugin must start before docker. [Docker's documentation](https://docs.docker.com/engine/extend/plugin_api/)
 5. Crash: The init system will start the plugin before docker. The plugin will gracefully clean up volumes that are no longer referenced from any container. 
