@@ -14,16 +14,24 @@
 # limitations under the License.
 
 echo "Resetting testbed"
+
 govc snapshot.revert -vm $ESX_6_5 init
 govc snapshot.revert -vm $ESX_6_0 init
 
 echo "Waiting for revert to complete";
 
 echo ESX 6.5
+
 until govc vm.ip $ESX_6_5
 do
     echo "Waiting for revert to complete for ESX6.5";
     sleep 1;
+done
+
+until $GOVC_GET_IP photon.vmfs
+do
+	echo "waiting for vm to be blessed with IP";
+	sleep 5;
 done
 
 echo ESX 6.0
@@ -34,6 +42,21 @@ do
 done
 
 echo "Reset complete"
+
+export GOVC_URL=$GOVC_URL_6_5
+export GOVC_USERNAME=$GOVC_USERNAME_ESX
+export GOVC_PASSWORD=$GOVC_PASSWORD_ESX
+
+echo "Starting VM part"
+
+until $GOVC_GET_IP photon.vmfs
+do
+    echo "waiting for vm to be blessed with IP";
+    sleep 3;
+done
+
+echo "Done: vm IP part"
+
 sleep 5;
 echo "Resume testing"
 
