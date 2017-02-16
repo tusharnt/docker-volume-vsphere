@@ -28,12 +28,6 @@ do
     sleep 1;
 done
 
-until $GOVC_GET_IP photon.vmfs
-do
-	echo "waiting for vm to be blessed with IP";
-	sleep 5;
-done
-
 echo ESX 6.0
 until govc vm.ip $ESX_6_0
 do
