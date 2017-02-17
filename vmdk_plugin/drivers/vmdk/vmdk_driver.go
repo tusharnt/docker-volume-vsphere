@@ -41,7 +41,7 @@ const (
 	devWaitTimeout   = 1 * time.Second
 	sleepBeforeMount = 1 * time.Second
 	watchPath        = "/dev/disk/by-path"
-	version          = "VSphere Volume Driver v0.3"
+	version          = "vSphere Volume Driver v0.3"
 	driverName       = "vsphere"
 )
 

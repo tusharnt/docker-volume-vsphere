@@ -38,7 +38,8 @@ const (
 	pluginSockDir = "/run/docker/plugins"
 	mountRoot     = "/mnt/vmdk" // VMDK and photon volumes are mounted here
 	photonDriver  = "photon"
-	vmdkDriver    = "vsphere"
+	vmdkDriver    = "vmdk"
+	vsphereDriver = "vsphere"
 )
 
 // An equivalent function is not exported from the SDK.
@@ -151,7 +152,7 @@ func main() {
 		}
 		driver = photon.NewVolumeDriver(*targetURL, *projectID,
 			*vmID, mountRoot)
-	} else if *driverName == vmdkDriver {
+	} else if *driverName == vmdkDriver || *driverName == vsphereDriver {
 		log.WithFields(log.Fields{"port": *port}).Info("Plugin options - ")
 
 		driver = vmdk.NewVolumeDriver(*port, *useMockEsx, mountRoot)
