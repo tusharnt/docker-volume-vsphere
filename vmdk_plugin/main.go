@@ -98,8 +98,8 @@ func main() {
 	var driver volume.Driver
 
 	// Define command line options
-	driverName := flag.String("driver", "vsphere", "Volume driver")
-	logLevel := flag.String("log_level", "debug", "Logging Level")
+	driverName := flag.String("driver", vsphereDriver, "Volume driver")
+	logLevel := flag.String("log_level", "info", "Logging Level")
 	configFile := flag.String("config", config.DefaultConfigPath, "Configuration file path")
 
 	// photon driver options
