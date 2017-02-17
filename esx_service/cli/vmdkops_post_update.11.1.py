@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright 2016 VMware, Inc. All Rights Reserved.
+# Copyright 2017 VMware, Inc. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# -------------------------------------------------------------------------------------------
 # Updates ESX with vSphere Docker Volume Service 0.11 (and earlier)
 #  to 0.11.1 and further
-
+#
 # This code expects to be places in  /usr/lib/vmware/vmdkops/bin/ to pick up correct modules.
-
+# -------------------------------------------------------------------------------------------
 
 #import os
 import os.path
@@ -69,6 +70,8 @@ def main():
           no matter if the code succeeds or fails
     """
 
+    stop_service = False  # makes debugging faster. TBD - test and set to true
+
     dbfile = auth_data.AUTH_DB_PATH
 
     # STEP: check DB presense and fetch old_uuid
@@ -95,10 +98,11 @@ def main():
     shutil.copy(dbfile, backup)
 
     print("Stopping vmdk-opsd  service")
-    os.system("/etc/init.d/vmdk-opsd stop")
+    if stop_service:
+        os.system("/etc/init.d/vmdk-opsd stop")
 
     # STEP : convert dir names to new UUID if needed.
-    print("Starting conversion of _DEFAULT tenant. old_uid is ", old_uuid, " ...")
+    print("Starting conversion of _DEFAULT tenant directry names. old_uid is ", old_uuid, " ...")
     stores = vmdk_utils.get_datastores()
     if not stores:
         print("Docker volume storage is not initialized - skipping directories patching")
@@ -111,17 +115,56 @@ def main():
     # STEP: patch database
     print("working on DB patch...")
     cursor = auth_mgr.conn.cursor() #  it is supposed to be connected by now
-    # TBD CODE
-    cursor.execute("SELECT * from vms")
-    print(cursor.fetchall())
+    # TBD DEBUG - conever to execute/execute many and debug
+
+    # sql for update the DB
+    # note that:
+    #       {0} is old_uuid
+    #       {1} is new_uuid
+    #       {2} is tmp name
+    #       {3} is description
+    #       {4} is default DB for _DEFAULT tenant
+    #       {5} is the name ("_DEFAULT") for default tenant
+    # TBD - use named params
+    sql_query_template = \
+    """
+    BEGIN TRANSACTION;
+        -- insert temp record to make foreign key happy
+        INSERT INTO tenants VALUES ( '{1}', '{2}', '{3}', '{4}' ) ;
+
+        -- update the tables
+        UPDATE vms SET tenant_id = '{1}' WHERE tenant_id = '{0}';
+        UPDATE volumes SET tenant_id = '{1}' WHERE tenant_id = '{0}';
+        UPDATE privileges SET tenant_id = '{1}' WHERE tenant_id = '{0}';
+
+        -- recover _DEFAULT tenant record
+        DELETE FROM tenants WHERE id = '{0}';
+        UPDATE tenants set name = '_DEFAULT' where id = '{1}';
+    COMMIT TRANSACTION;
+    """
+
+    tmp_tenant_name = "__tmp_name_upgrade_0_11"
+    sql_query = sql_query_template.format(old_uuid, STATIC_UUID, tmp_tenant_name,
+                                          tenant.description, tenant.default_datastore_url,
+                                          auth.DEFAULT_TENANT)
+    print("Query to execute (skipping for now)")
+    # print(sql_query)
+    # TBD !!! cursor.executescript(sql_query)
+
+    cursor.execute("SELECT * from tenants")
+    for r in cursor.fetchone():
+        print(r)
     print("Done")
 
     # STEP: restart the service
     print("Starting vmdk-opsd  service")
-    os.system("/etc/init.d/vmdk-opsd start")
+    if stop_service:
+        os.system("/etc/init.d/vmdk-opsd start")
 
+    # TBD: remove backup ?
     print ("*** ALL DONE ***")
 
 
 if __name__ == "__main__":
     main()
+
